@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import {Segment,  } from 'semantic-ui-react';
-import "react-responsive-carousel/lib/styles/carousel.min.css";
 import Footer from '../Footer.js';
 import _ from 'lodash';
 import rentalApi from "../../api/rentalApi";

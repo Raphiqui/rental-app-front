@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import {Button, Form, Grid, Header, Segment, Popup, Message,  } from 'semantic-ui-react';
-import "react-responsive-carousel/lib/styles/carousel.min.css";
 import _ from 'lodash';
 import userApi from "../api/userApi.js";
 import { DatePicker, message } from 'antd';

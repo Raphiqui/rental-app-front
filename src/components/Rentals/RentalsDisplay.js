@@ -22,7 +22,7 @@ export default class RentalsDisplay extends Component{
                     return (    <Card key={result._id}>
                             <Card.Content>
                                 <Image
-                                    src={result.imgUrl}
+                                    src={result.image.url}
                                     style={{ paddingBottom: '10px'}}
                                 />
                                 <Card.Header style={{fontSize: "25px"}}>{result.name}</Card.Header>

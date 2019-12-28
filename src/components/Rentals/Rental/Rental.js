@@ -12,9 +12,6 @@ export default class Rental extends Component{
     constructor(props) {
         super(props);
         this.state  = {
-            timeByFoot: "30 to 35 minutes by foot",
-            timeByCar: "10 to 15 minutes by car",
-            timeByBicycle: "15 minutes by bicycle",
         };
     }
 
@@ -44,7 +41,7 @@ export default class Rental extends Component{
     };
 
     render() {
-        const { rental, timeByFoot, timeByCar, timeByBicycle } = this.state;
+        const { rental } = this.state;
 
         let style, message;
         if(!_.isNil(rental)){
@@ -92,9 +89,7 @@ export default class Rental extends Component{
                             <Grid.Row textAlign='center'>
                                 <Grid.Column style={{paddingBottom: '2em', paddingTop: '2em'}}>
                                     <RentalFacilities
-                                        timeByCar = {timeByCar}
-                                        timeByFoot = {timeByFoot}
-                                        timeByBicycle = {timeByBicycle}
+                                        rentalFacilities = {rental.facilities}
                                     />
                                 </Grid.Column>
                                 <Grid.Column style={{paddingBottom: '5em', paddingTop: '5em'}}>

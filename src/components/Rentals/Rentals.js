@@ -53,6 +53,7 @@ export default class Rentals extends Component{
             if(!("error" in response)){
                 this.setState({
                     results: response.data,
+                    rentals: response.data
                 })
             }
 

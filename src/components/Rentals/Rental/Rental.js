@@ -19,21 +19,17 @@ export default class Rental extends Component{
         let rentalapi = new rentalApi();
 
         let response;
+        let picturesUrl = [];
 
         try{
             response = await rentalapi.fetchRental(this.props.match.params.id);
             if(!("error" in response)){
-                const image = await rentalapi.fetchRentalImg(this.props.match.params.id);
-                const pictures = await rentalapi.fetchRentalImgs(this.props.match.params.id);
-                try{
-                    if( !("error" in image) && !("error" in pictures) ){
-                        response.data.pictsUrl = pictures.data;
-                        response.data.imgUrl = image.data;
-                        this.setState({rental: response.data})
-                    }
-                }catch (e) {
-                    console.error(e);
-                }
+
+                _.map(response.data.pictures, picture => {
+                    picturesUrl.push(picture.url)
+                });
+
+                this.setState({rental: response.data, pictsUrl: picturesUrl})
             }
         }catch (e) {
             console.error(e);
@@ -41,7 +37,7 @@ export default class Rental extends Component{
     };
 
     render() {
-        const { rental } = this.state;
+        const { rental, pictsUrl } = this.state;
 
         let style, message;
         if(!_.isNil(rental)){
@@ -67,7 +63,7 @@ export default class Rental extends Component{
                     </Grid>
                     <Container style={{ margin: 20, }}>
                         <Segment attached="bottom">
-                            <ImageCarousel pictsUrl={rental.pictsUrl}/>
+                            <ImageCarousel pictsUrl={pictsUrl}/>
                         </Segment>
                     </Container>
                     <Segment style={{padding: '0em'}} vertical>

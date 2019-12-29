@@ -51,24 +51,10 @@ export default class Rentals extends Component{
         try{
             response = await rentalapi.fetchRentals();
             if(!("error" in response)){
-                _.map(response.data, async data => {
-
-                    const image = await rentalapi.fetchRentalImg(data._id);
-                    try{
-                        if(!("error" in image)){
-                            data.imgUrl = image.data;
-                            this.setState({
-                                rentals: [ ...this.state.rentals, data],
-                            }, () => {
-                                this.setState({
-                                    results: this.state.rentals,
-                                })
-                            });
-                        }
-                    }catch (e) {
-                        console.error(e);
-                    }
-                });
+                this.setState({
+                    results: response.data,
+                    rentals: response.data
+                })
             }
 
         }catch (e) {

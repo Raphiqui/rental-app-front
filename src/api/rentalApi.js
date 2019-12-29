@@ -22,14 +22,14 @@ export default class rentalApi {
         }
     };
 
-    fetchRentalImgs = async (id) => {
-        try{
-            const rentalPictures = await axios.get(API_URL  + 'rentals/images/' + id);
-            return rentalPictures;
-        }catch (e) {
-            return {message: e.message}
-        }
-    };
+    // fetchRentalImgs = async (id) => {
+    //     try{
+    //         const rentalPictures = await axios.get(API_URL  + 'rentals/images/' + id);
+    //         return rentalPictures;
+    //     }catch (e) {
+    //         return {message: e.message}
+    //     }
+    // };
 
     fetchRentals = async () => {
         try{

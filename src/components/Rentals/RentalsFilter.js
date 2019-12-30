@@ -6,7 +6,7 @@ export default class RentalsFilter extends Component{
 
     render() {
         const { RangePicker } = DatePicker;
-        const {friendOptions, suirChecked} = this.props;
+        const {locations, suirChecked} = this.props;
 
         return (
             <Segment raised style={{marginLeft: "30px"}}>
@@ -18,10 +18,13 @@ export default class RentalsFilter extends Component{
                             placeholder='Select a place'
                             fluid
                             selection
-                            onChange={this.getInput}
-                            options={friendOptions}
+                            onChange={this.props.getInput}
+                            options={locations}
                         />
                     </List.Item>
+                    <List.item>
+                        <Checkbox label='Make my profile visible' />
+                    </List.item>
                     <List.Item>
                         <label style={{ fontWeight: "bold" }} >Rental's price</label>
                         <Slider
@@ -51,7 +54,7 @@ export default class RentalsFilter extends Component{
                         <br/>
                         <Checkbox label='sauna' />
                     </List.Item>
-                    <Button style={{ marginTop: '3px'}}>Search</Button>
+                    <Button onClick={this.props.onTest} style={{ marginTop: '3px'}}>Search</Button>
                 </List>
             </Segment>
         )

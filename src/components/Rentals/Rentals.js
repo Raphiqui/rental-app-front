@@ -14,7 +14,11 @@ export default class Rentals extends Component{
         this.state  = {
             rentals: [],
             results: [],
-            value: ''
+            value: '',
+            locations: [],
+            filters: {
+                location: '',
+            }
         };
     }
 
@@ -36,24 +40,52 @@ export default class Rentals extends Component{
     };
 
     getInput = (event) => {
-        console.log(event.target.textContent)
+        this.setState({
+            filters: { location: event.target.textContent}
+        })
     };
 
     onChange = (value) => {
         console.log('onChange: ', value);
     };
 
+    onTest = () => {
+        let founds = [];
+
+        _.map(this.state.rentals, rental => {
+            const found = rental.location.match(this.state.filters.location);
+            if(!_.isNull(found)){founds.push(rental)}
+        });
+
+        this.setState({
+            results: founds,
+        });
+    };
+
     async componentDidMount() {
         let rentalapi = new rentalApi();
 
         let response;
+        let locationsBuffer = [];
 
         try{
             response = await rentalapi.fetchRentals();
             if(!("error" in response)){
+
+
+
+                _.map(response.data, rental => {
+                        locationsBuffer = _.concat(locationsBuffer, {
+                            key: rental.location,
+                            text: rental.location,
+                            value: rental.location
+                        })
+                });
+
                 this.setState({
                     results: response.data,
-                    rentals: response.data
+                    rentals: response.data,
+                    locations: [...new Map(locationsBuffer.map(item => [item.key, item])).values()],
                 })
             }
 
@@ -68,25 +100,7 @@ export default class Rentals extends Component{
 
     render() {
 
-        const { suirChecked, results } = this.state;
-
-        const friendOptions = [
-            {
-                key: 'Australia',
-                text: 'Australia',
-                value: 'Australia',
-            },
-            {
-                key: 'Canada',
-                text: 'Canada',
-                value: 'Canada',
-            },
-            {
-                key: 'Mongolia',
-                text: 'Mongolia',
-                value: 'Mongolia',
-            },
-        ];
+        const { locations, suirChecked, results } = this.state;
 
         return (
             <Segment style={{padding: '0em'}} basic vertical>
@@ -96,8 +110,10 @@ export default class Rentals extends Component{
                             <Grid.Column style={{paddingBottom: '5em', paddingTop: '1em'}}>
                                 <Sticky context={this.contextRef} offset={100}>
                                     <RentalsFilter
-                                        friendOptions = {friendOptions}
+                                        locations = {locations}
                                         suirChecked = {suirChecked}
+                                        onTest = {this.onTest}
+                                        getInput = {this.getInput}
                                     />
                                 </Sticky>
                             </Grid.Column>

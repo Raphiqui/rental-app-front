@@ -48,12 +48,13 @@ export default class Rentals extends Component{
     };
 
     clearFilters = () => {
-        this.setState({
+        this.setState(prevState => ({
+            ...prevState,
             filters: {
                 location: '',
                 radio: 'all',
             }
-        })
+        }));
     };
 
     handleDropdown = (e, { value }) => {
@@ -154,6 +155,8 @@ export default class Rentals extends Component{
     render() {
 
         const { locations, suirChecked, results, filters } = this.state;
+
+        console.info(this.state)
 
         return (
 

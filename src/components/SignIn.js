@@ -3,7 +3,9 @@ import {Button, Form, Grid, Header, Segment, Popup, Message,  } from 'semantic-u
 import _ from 'lodash';
 import userApi from "../api/userApi.js";
 import { DatePicker, message } from 'antd';
-const isValidBirthdate = require('is-valid-birthdate')
+import { Redirect  } from "react-router-dom";
+import Nav from './Nav';
+const isValidBirthdate = require('is-valid-birthdate');
 
 // const validEmailRegex = RegExp(/^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i);
 // const validIntegerRegex = RegExp(/^[0-9]*$/);
@@ -174,110 +176,119 @@ export default class SignIn extends Component{
     render() {
         const {errors, successfullyCreated, unsuccessfullyCreated } = this.state;
 
-        return (
-            <Grid textAlign='center' style={{ marginTop: '60px' }} verticalAlign='middle'>
-                <Segment raised style={{ width: 600 }} >
+        if(sessionStorage.getItem('currentUser') !== null) {
+            return <Redirect to={`/`}/>
+        }else{
+            return (
+                <div>
 
-                    {successfullyCreated
-                        ? <Message positive>
-                            <Message.Header>User successfully created</Message.Header>
-                        </Message>
-                        : null
-                    }
+                    <Nav/>
 
-                    {unsuccessfullyCreated
-                        ? <Message negative>
-                            <Message.Header>This login is already taken, please try another one</Message.Header>
-                        </Message>
-                        : null
-                    }
+                    <Grid textAlign='center' style={{ marginTop: '60px' }} verticalAlign='middle'>
+                        <Segment raised style={{ width: 600 }} >
 
-                    <Grid.Column>
-                        <Header as='h2' color='teal' textAlign='center'>
-                            Account creation
-                        </Header>
-                        <Form onSubmit={this.handleSubmit} >
-                            <Form.Input
-                                required
-                                onChange={this.handleChange}
-                                error={errors.name}
-                                fluid
-                                label='Name'
-                                name='name'
-                                placeholder='Alexis'
-                            />
-                            <Form.Input
-                                required
-                                onChange={this.handleChange}
-                                error={errors.surname}
-                                fluid
-                                label='Surname'
-                                name='surname'
-                                placeholder='Dervault'
-                            />
-                            {/*<Form.Input*/}
-                            {/*required*/}
-                            {/*onChange={this.handleChange}*/}
-                            {/*error={errors.age}*/}
-                            {/*fluid*/}
-                            {/*label='Age'*/}
-                            {/*name='age'*/}
-                            {/*placeholder='32'*/}
-                            {/*/>*/}
-                            <h4><b>Birth date</b></h4>
-                            <DatePicker
-                                style={{marginBottom: '1em'}}
-                                onChange={this.onChange}
-                                onPanelChange={this.onPanelChange}
-                                error={errors.birth_date}
-                                label='Birth date'
-                                name='birth_date'
-                            />
-                            <Form.Input
-                                required
-                                onChange={this.handleChange}
-                                error={errors.address}
-                                fluid
-                                label='Address'
-                                name='address'
-                                placeholder='51 rue example'
-                            />
-                            <Popup
-                                content='
-                                Valid formats : (123) 456-7890 | (123)456-7890 | 123-456-7890 | 123.456.7890 | 1234567890 | +31636363634'
-                                trigger={
+                            {successfullyCreated
+                                ? <Message positive>
+                                    <Message.Header>User successfully created</Message.Header>
+                                </Message>
+                                : null
+                            }
+
+                            {unsuccessfullyCreated
+                                ? <Message negative>
+                                    <Message.Header>This login is already taken, please try another one</Message.Header>
+                                </Message>
+                                : null
+                            }
+
+                            <Grid.Column>
+                                <Header as='h2' color='teal' textAlign='center'>
+                                    Account creation
+                                </Header>
+                                <Form onSubmit={this.handleSubmit} >
                                     <Form.Input
                                         required
                                         onChange={this.handleChange}
-                                        error={errors.phone_number}
+                                        error={errors.name}
                                         fluid
-                                        label='Phone'
-                                        name='phone_number'
-                                        placeholder='+33601020304'
+                                        label='Name'
+                                        name='name'
+                                        placeholder='Alexis'
                                     />
-                                }
-                            />
-                            <Form.Input
-                                required
-                                onChange={this.handleChange}
-                                error={errors.login}
-                                fluid
-                                label='Login'
-                                name='login'
-                            />
-                            <Form.Input
-                                required
-                                onChange={this.handleChange}
-                                error={errors.password}
-                                fluid
-                                label='Password'
-                                name='password'
-                            />
-                            <Button type='submit' primary>Submit</Button>
-                        </Form>
-                    </Grid.Column>
-                </Segment>
-            </Grid>
-        );
+                                    <Form.Input
+                                        required
+                                        onChange={this.handleChange}
+                                        error={errors.surname}
+                                        fluid
+                                        label='Surname'
+                                        name='surname'
+                                        placeholder='Dervault'
+                                    />
+                                    {/*<Form.Input*/}
+                                    {/*required*/}
+                                    {/*onChange={this.handleChange}*/}
+                                    {/*error={errors.age}*/}
+                                    {/*fluid*/}
+                                    {/*label='Age'*/}
+                                    {/*name='age'*/}
+                                    {/*placeholder='32'*/}
+                                    {/*/>*/}
+                                    <h4><b>Birth date</b></h4>
+                                    <DatePicker
+                                        style={{marginBottom: '1em'}}
+                                        onChange={this.onChange}
+                                        onPanelChange={this.onPanelChange}
+                                        error={errors.birth_date}
+                                        label='Birth date'
+                                        name='birth_date'
+                                    />
+                                    <Form.Input
+                                        required
+                                        onChange={this.handleChange}
+                                        error={errors.address}
+                                        fluid
+                                        label='Address'
+                                        name='address'
+                                        placeholder='51 rue example'
+                                    />
+                                    <Popup
+                                        content='
+                                Valid formats : (123) 456-7890 | (123)456-7890 | 123-456-7890 | 123.456.7890 | 1234567890 | +31636363634'
+                                        trigger={
+                                            <Form.Input
+                                                required
+                                                onChange={this.handleChange}
+                                                error={errors.phone_number}
+                                                fluid
+                                                label='Phone'
+                                                name='phone_number'
+                                                placeholder='+33601020304'
+                                            />
+                                        }
+                                    />
+                                    <Form.Input
+                                        required
+                                        onChange={this.handleChange}
+                                        error={errors.login}
+                                        fluid
+                                        label='Login'
+                                        name='login'
+                                    />
+                                    <Form.Input
+                                        required
+                                        onChange={this.handleChange}
+                                        error={errors.password}
+                                        fluid
+                                        label='Password'
+                                        name='password'
+                                    />
+                                    <Button type='submit' primary>Submit</Button>
+                                </Form>
+                            </Grid.Column>
+                        </Segment>
+                    </Grid>
+                </div>
+            );
+        }
     }
 }

@@ -19,6 +19,7 @@ export default class Rentals extends Component{
             locations: [],
             filters: {
                 location: '',
+                radio: 'all',
             }
         };
     }
@@ -46,36 +47,72 @@ export default class Rentals extends Component{
         })
     };
 
+    clearFilters = () => {
+        this.setState({
+            filters: {
+                location: '',
+                radio: 'all',
+            }
+        })
+    };
+
+    handleDropdown = (e, { value }) => {
+        this.setState(prevState => ({
+            filters: {
+                ...prevState.filters,
+                location: value
+            }
+        }))
+    };
+
+    handleCheckbox = (e) => {
+        const { name, checked } = e.target;
+        this.setState(prevState => ({
+            filters: {
+                ...prevState.filters,
+                [name]: checked
+            }
+        }))
+    };
+
+    handleRadio = (e, { value }) => {
+        this.setState(prevState => ({
+            filters: {
+                ...prevState.filters,
+                radio: value
+            }
+        }))
+    };
+
     onChange = (value) => {
         console.log('onChange: ', value);
     };
 
     checked = (data) => {
         this.setState({
-            filters: { isAvailabale: data.checked}
+            filters: { isAvailable: data.checked}
         })
     };
 
-    onTest = () => {
-        let founds = [];
+    handleSubmit = () => {
 
-        _.map(this.state.rentals, rental => {
-            const found = rental.location.match(this.state.filters.location);
-            if(!_.isNull(found)){
-                if(!_.isNil(this.state.filters.isAvailabale)){
-                    console.info(rental.isAvailabale === this.state.filters.isAvailabale);
-                    if(rental.isAvailabale === this.state.filters.isAvailabale){
-                        founds.push(rental)
-                    }
-                }else{
-                    founds.push(rental)
-                }
-            }
-        });
-
-        this.setState({
-            results: founds,
-        });
+        const resultsLocation = this.state.rentals.filter(rental => rental.location === this.state.filters.location);
+        let resultsAvailable;
+        if(this.state.filters.radio === "available"){
+            resultsAvailable = resultsLocation.filter(rental => rental.isAvailable === true);
+            this.setState({
+                results: resultsAvailable,
+            });
+        }else if(this.state.filters.radio === "notAvailable"){
+            resultsAvailable = resultsLocation.filter(rental => rental.isAvailable === false);
+            this.setState({
+                results: resultsAvailable,
+            });
+        }else{
+            this.setState({
+                results: resultsLocation,
+            });
+        }
     };
 
     async componentDidMount() {
@@ -116,7 +153,7 @@ export default class Rentals extends Component{
 
     render() {
 
-        const { locations, suirChecked, results } = this.state;
+        const { locations, suirChecked, results, filters } = this.state;
 
         return (
 
@@ -133,9 +170,13 @@ export default class Rentals extends Component{
                                         <RentalsFilter
                                             locations = {locations}
                                             suirChecked = {suirChecked}
-                                            onTest = {this.onTest}
-                                            getInput = {this.getInput}
-                                            checked = {this.checked}
+                                            dropdownValue={this.state.filters.location}
+                                            handleSubmit = {this.handleSubmit}
+                                            clearFilters={this.clearFilters}
+                                            value={filters.radio}
+                                            handleDropdown = {this.handleDropdown}
+                                            handleCheckbox = {this.handleCheckbox}
+                                            handleRadio={this.handleRadio}
                                         />
                                     </Sticky>
                                 </Grid.Column>

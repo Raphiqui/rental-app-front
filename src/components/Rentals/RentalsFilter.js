@@ -62,7 +62,7 @@ export default class RentalsFilter extends Component{
                             onChange={this.props.handleRadio}
                         />
                     </Form.Group>
-                    <Form.Button color="blue">Submit</Form.Button>
+                    <Form.Button disabled={_.isEmpty(this.props.filters.location)} color="blue">Submit</Form.Button>
                     {/*<List>*/}
                         {/*<List.Item>*/}
                             {/*<label style={{ fontWeight: "bold" }} >Rental's price</label>*/}

@@ -17,6 +17,7 @@ export default class Connected extends Component{
         let response;
         try{
             response = await userapi.fetchUser(this.state.test.match.params.id);
+            sessionStorage.setItem('currentUser', response.data._id);
             this.setState({user: response.data})
         }catch (e) {
             console.error(e)

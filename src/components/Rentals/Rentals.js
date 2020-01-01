@@ -6,6 +6,7 @@ import rentalApi from "../../api/rentalApi";
 import RentalsFilter from "./RentalsFilter";
 import RentalsSearch from "./RentalsSearch";
 import RentalsDisplay from "./RentalsDisplay";
+import Nav from "../Nav";
 
 export default class Rentals extends Component{
 
@@ -49,12 +50,27 @@ export default class Rentals extends Component{
         console.log('onChange: ', value);
     };
 
+    checked = (data) => {
+        this.setState({
+            filters: { isAvailabale: data.checked}
+        })
+    };
+
     onTest = () => {
         let founds = [];
 
         _.map(this.state.rentals, rental => {
             const found = rental.location.match(this.state.filters.location);
-            if(!_.isNull(found)){founds.push(rental)}
+            if(!_.isNull(found)){
+                if(!_.isNil(this.state.filters.isAvailabale)){
+                    console.info(rental.isAvailabale === this.state.filters.isAvailabale);
+                    if(rental.isAvailabale === this.state.filters.isAvailabale){
+                        founds.push(rental)
+                    }
+                }else{
+                    founds.push(rental)
+                }
+            }
         });
 
         this.setState({
@@ -103,33 +119,40 @@ export default class Rentals extends Component{
         const { locations, suirChecked, results } = this.state;
 
         return (
-            <Segment style={{padding: '0em'}} basic vertical>
-                <Grid columns='equal' stackable>
-                    <Ref innerRef={this.contextRef}>
-                        <Grid.Row textAlign='center'>
-                            <Grid.Column style={{paddingBottom: '5em', paddingTop: '1em'}}>
-                                <Sticky context={this.contextRef} offset={100}>
-                                    <RentalsFilter
-                                        locations = {locations}
-                                        suirChecked = {suirChecked}
-                                        onTest = {this.onTest}
-                                        getInput = {this.getInput}
+
+            <div>
+
+                <Nav/>
+
+                <Segment style={{padding: '0em'}} basic vertical>
+                    <Grid columns='equal' stackable>
+                        <Ref innerRef={this.contextRef}>
+                            <Grid.Row textAlign='center'>
+                                <Grid.Column style={{paddingBottom: '5em', paddingTop: '1em'}}>
+                                    <Sticky context={this.contextRef} offset={100}>
+                                        <RentalsFilter
+                                            locations = {locations}
+                                            suirChecked = {suirChecked}
+                                            onTest = {this.onTest}
+                                            getInput = {this.getInput}
+                                            checked = {this.checked}
+                                        />
+                                    </Sticky>
+                                </Grid.Column>
+                                <Grid.Column width={12} style={{padding: '1em'}} >
+                                    <RentalsSearch
+                                        handleSearchChange = {this.handleSearchChange}
                                     />
-                                </Sticky>
-                            </Grid.Column>
-                            <Grid.Column width={12} style={{padding: '1em'}} >
-                                <RentalsSearch
-                                    handleSearchChange = {this.handleSearchChange}
-                                />
-                                {_.isEmpty(results) ? <Empty style={{paddingTop: "20em"}} description="No data found"/> : null}
-                                <RentalsDisplay
-                                    results = {results}
-                                />
-                            </Grid.Column>
-                        </Grid.Row>
-                    </Ref>
-                </Grid>
-            </Segment>
+                                    {_.isEmpty(results) ? <Empty style={{paddingTop: "20em"}} description="No data found"/> : null}
+                                    <RentalsDisplay
+                                        results = {results}
+                                    />
+                                </Grid.Column>
+                            </Grid.Row>
+                        </Ref>
+                    </Grid>
+                </Segment>
+            </div>
         )
     }
 

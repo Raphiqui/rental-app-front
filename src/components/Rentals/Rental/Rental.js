@@ -6,6 +6,7 @@ import rentalApi from "../../../api/rentalApi.js";
 import ImageCarousel from "./RentalCarousel/ImageCarousel";
 import "pure-react-carousel/dist/react-carousel.es.css";
 import RentalFacilities from "./RentalFacilities";
+import Nav from "../../Nav";
 
 export default class Rental extends Component{
 
@@ -48,55 +49,59 @@ export default class Rental extends Component{
             }
 
             return (
-                <Segment basic vertical>
-                    <Grid celled='internally' columns='equal' stackable>
-                        <Grid.Row textAlign='center'>
-                            <Grid.Column style={{paddingBottom: '2em', paddingTop: '2em'}}>
-                                <Header as='h3' style={{fontSize: '2em'}}>
-                                    {rental.name}
-                                </Header>
-                                <p style={style}>
-                                    {message}
-                                </p>
-                            </Grid.Column>
-                        </Grid.Row>
-                    </Grid>
-                    <Container style={{ margin: 20, }}>
-                        <Segment attached="bottom">
-                            <ImageCarousel pictsUrl={pictsUrl}/>
-                        </Segment>
-                    </Container>
-                    <Segment style={{padding: '0em'}} vertical>
-                        <Grid celled='internally' stackable>
+
+                <div>
+                    <Nav/>
+                    <Segment basic vertical>
+                        <Grid celled='internally' columns='equal' stackable>
                             <Grid.Row textAlign='center'>
-                                <Grid.Column style={{padding: '5em'}}>
+                                <Grid.Column style={{paddingBottom: '2em', paddingTop: '2em'}}>
                                     <Header as='h3' style={{fontSize: '2em'}}>
-                                        Description
+                                        {rental.name}
                                     </Header>
-                                    <p style={{fontSize: '1.33em'}}>
-                                        {rental.description}
+                                    <p style={style}>
+                                        {message}
                                     </p>
                                 </Grid.Column>
                             </Grid.Row>
                         </Grid>
+                        <Container style={{ margin: 20, }}>
+                            <Segment attached="bottom">
+                                <ImageCarousel pictsUrl={pictsUrl}/>
+                            </Segment>
+                        </Container>
+                        <Segment style={{padding: '0em'}} vertical>
+                            <Grid celled='internally' stackable>
+                                <Grid.Row textAlign='center'>
+                                    <Grid.Column style={{padding: '5em'}}>
+                                        <Header as='h3' style={{fontSize: '2em'}}>
+                                            Description
+                                        </Header>
+                                        <p style={{fontSize: '1.33em'}}>
+                                            {rental.description}
+                                        </p>
+                                    </Grid.Column>
+                                </Grid.Row>
+                            </Grid>
+                        </Segment>
+                        <Segment style={{padding: '0em'}} vertical>
+                            <Grid celled='internally' columns='equal' stackable>
+                                <Grid.Row textAlign='center'>
+                                    <Grid.Column style={{paddingBottom: '2em', paddingTop: '2em'}}>
+                                        <RentalFacilities
+                                            rentalFacilities = {rental.facilities}
+                                        />
+                                    </Grid.Column>
+                                    <Grid.Column style={{paddingBottom: '5em', paddingTop: '5em'}}>
+                                        <Header as='h3' style={{fontSize: '2em'}}>
+                                            In progress <Loader active inline />
+                                        </Header>
+                                    </Grid.Column>
+                                </Grid.Row>
+                            </Grid>
+                        </Segment>
                     </Segment>
-                    <Segment style={{padding: '0em'}} vertical>
-                        <Grid celled='internally' columns='equal' stackable>
-                            <Grid.Row textAlign='center'>
-                                <Grid.Column style={{paddingBottom: '2em', paddingTop: '2em'}}>
-                                    <RentalFacilities
-                                        rentalFacilities = {rental.facilities}
-                                    />
-                                </Grid.Column>
-                                <Grid.Column style={{paddingBottom: '5em', paddingTop: '5em'}}>
-                                    <Header as='h3' style={{fontSize: '2em'}}>
-                                        In progress <Loader active inline />
-                                    </Header>
-                                </Grid.Column>
-                            </Grid.Row>
-                        </Grid>
-                    </Segment>
-                </Segment>
+                </div>
             )
 
         }else{

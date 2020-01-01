@@ -1,7 +1,7 @@
-import React, { Component } from "react";
+import React, { PureComponent  } from "react";
 import {Header, Container,} from 'semantic-ui-react';
 
-export default class HomeGreetings extends Component{
+export default class HomeGreetings extends PureComponent {
 
     render() {
 

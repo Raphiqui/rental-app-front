@@ -22,9 +22,12 @@ export default class RentalsFilter extends Component{
                             options={locations}
                         />
                     </List.Item>
-                    <List.item>
-                        <Checkbox label='Make my profile visible' />
-                    </List.item>
+                    <List.Item>
+                        <Checkbox
+                            label='Is available'
+                            onChange={this.props.checked}
+                        />
+                    </List.Item>
                     <List.Item>
                         <label style={{ fontWeight: "bold" }} >Rental's price</label>
                         <Slider

@@ -13,6 +13,7 @@ class DesktopContainer extends PureComponent {
     constructor() {
         super();
         this.state = {
+            style: {color: "white", paddingLeft: "20px"}
         }
     }
 
@@ -25,12 +26,12 @@ class DesktopContainer extends PureComponent {
         }
     }
 
-    hideFixedMenu = () => this.setState({ fixed: false });
-    showFixedMenu = () => this.setState({ fixed: true });
+    hideFixedMenu = () => this.setState({ fixed: false, style: {color: "white", paddingLeft: "20px"}});
+    showFixedMenu = () => this.setState({ fixed: true, style: {color: "black", paddingLeft: "20px"}});
 
     render() {
         const { children } = this.props;
-        const { fixed, user } = this.state;
+        const { fixed, user, style } = this.state;
 
         return (
             <Responsive getWidth={getWidth} minWidth={Responsive.onlyTablet.minWidth}>
@@ -63,7 +64,7 @@ class DesktopContainer extends PureComponent {
                                         <Button as={ NavLink } to="/logout" inverted={!fixed}>
                                             Log out
                                         </Button>
-                                        <h3 style={{color: "white", paddingLeft: "20px"}}>Connected as {user.surname}</h3>
+                                        <h3 style={style}>Connected as {user.surname}</h3>
                                     </Menu.Item>
                                     : <Menu.Item position="right">
                                         <Button as={ NavLink } to="/login" inverted={!fixed}>
@@ -106,13 +107,13 @@ class MobileContainer extends PureComponent {
         }
     }
 
-    handleSidebarHide = () => this.setState({ sidebarOpened: false });
+    handleSidebarHide = () => this.setState({ sidebarOpened: false});
 
-    handleToggle = () => this.setState({ sidebarOpened: true });
+    handleToggle = () => this.setState({ sidebarOpened: true});
 
     render() {
         const { children } = this.props;
-        const { sidebarOpened, fixed, user } = this.state;
+        const { sidebarOpened, fixed, user, style } = this.state;
 
         return (
             <Responsive
@@ -151,7 +152,7 @@ class MobileContainer extends PureComponent {
                                         <Button as={ NavLink } to="/logout" inverted={!fixed}>
                                             Log out
                                         </Button>
-                                        <h3 style={{color: "white", paddingLeft: "20px"}}>Connected as {user.surname}</h3>
+                                        <h3 style={{color: "white", paddingLeft: "20px"} }>Connected as {user.surname}</h3>
                                     </Menu.Item>
                                     : <Menu.Item position="right">
                                         <Button as={ NavLink } to="/login" inverted={!fixed}>

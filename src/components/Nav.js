@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React, {PureComponent} from "react";
 import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { Button, Container, Icon, Menu, Responsive, Segment, Sidebar, Visibility, } from 'semantic-ui-react';
@@ -9,8 +9,21 @@ const getWidth = () => {
     return isSSR ? Responsive.onlyTablet.minWidth : window.innerWidth
 };
 
-class DesktopContainer extends Component {
-    state = {};
+class DesktopContainer extends PureComponent {
+    constructor() {
+        super();
+        this.state = {
+        }
+    }
+
+    componentWillMount(){
+        if(sessionStorage.getItem('currentUser') != null){
+            this.setState({loggedIn: true});
+        }
+        else{
+            this.setState({loggedIn: false});
+        }
+    }
 
     hideFixedMenu = () => this.setState({ fixed: false });
     showFixedMenu = () => this.setState({ fixed: true });
@@ -18,6 +31,8 @@ class DesktopContainer extends Component {
     render() {
         const { children } = this.props;
         const { fixed } = this.state;
+
+        console.info(sessionStorage.getItem("currentUser"));
 
         return (
             <Responsive getWidth={getWidth} minWidth={Responsive.onlyTablet.minWidth}>
@@ -44,14 +59,22 @@ class DesktopContainer extends Component {
                                     Home
                                 </Menu.Item>
                                 <Menu.Item as={ NavLink } to="/rentals">Rentals</Menu.Item>
-                                <Menu.Item position="right">
-                                    <Button as={ NavLink } to="/login" inverted={!fixed}>
-                                        Log in
-                                    </Button>
-                                    <Button as={ NavLink } to="/signin" inverted={!fixed} primary={fixed} style={{ marginLeft: '0.5em' }}>
-                                        Sign Up
-                                    </Button>
-                                </Menu.Item>
+
+                                {sessionStorage.getItem('currentUser') !== null
+                                    ? <Menu.Item position="right">
+                                        <Button as={ NavLink } to="/logout" inverted={!fixed}>
+                                            Log out
+                                        </Button>
+                                    </Menu.Item>
+                                    : <Menu.Item position="right">
+                                        <Button as={ NavLink } to="/login" inverted={!fixed}>
+                                            Log in
+                                        </Button>
+                                        <Button as={ NavLink } to="/signin" inverted={!fixed} primary={fixed} style={{ marginLeft: '0.5em' }}>
+                                            Sign Up
+                                        </Button>
+                                    </Menu.Item>
+                                }
                             </Container>
                         </Menu>
                     </Segment>
@@ -67,8 +90,12 @@ DesktopContainer.propTypes = {
     children: PropTypes.node,
 };
 
-class MobileContainer extends Component {
-    state = {};
+class MobileContainer extends PureComponent {
+    constructor() {
+        super();
+        this.state = {
+        }
+    }
 
     handleSidebarHide = () => this.setState({ sidebarOpened: false });
 
@@ -134,6 +161,7 @@ MobileContainer.propTypes = {
 };
 
 const ResponsiveContainer = ({ children }) => (
+
     <div>
         <DesktopContainer>{children}</DesktopContainer>
         <MobileContainer>{children}</MobileContainer>

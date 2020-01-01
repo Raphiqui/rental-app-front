@@ -6,6 +6,7 @@ import rentalApi from "../../api/rentalApi";
 import HomeGreetings from "./HomeGreetings";
 import HomeDescription from "./HomeDescription";
 import HomeImagesDisplay from "./HomeImagesDisplay";
+import Nav from "../Nav";
 
 export default class HomepageLayout extends Component{
 
@@ -46,6 +47,9 @@ export default class HomepageLayout extends Component{
 
         return (
             <div>
+
+                <Nav/>
+
                 <Segment style={{padding: '6em 0em'}} vertical>
 
                     <HomeGreetings/>

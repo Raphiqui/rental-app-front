@@ -1,12 +1,16 @@
 import React, { Component } from "react";
 import { Container, Divider, Segment } from "semantic-ui-react";
 import { Empty } from 'antd';
+import Nav from './Nav';
 
 export default class About extends Component {
 
     render() {
         return (
             <div className="About">
+
+                <Nav/>
+
                 <Segment style={{padding: '8em 0em'}} vertical>
                     <Container text>
                         <Divider

@@ -89,10 +89,20 @@ DesktopContainer.propTypes = {
     children: PropTypes.node,
 };
 
+//TODO add log out update about mobile display
 class MobileContainer extends PureComponent {
     constructor() {
         super();
         this.state = {
+        }
+    }
+
+    componentWillMount(){
+        if(sessionStorage.getItem('currentUser') != null){
+            this.setState({loggedIn: true, user: JSON.parse(sessionStorage.getItem('currentUser'))})
+        }
+        else{
+            this.setState({loggedIn: false, user: null});
         }
     }
 
@@ -102,7 +112,7 @@ class MobileContainer extends PureComponent {
 
     render() {
         const { children } = this.props;
-        const { sidebarOpened, fixed } = this.state;
+        const { sidebarOpened, fixed, user } = this.state;
 
         return (
             <Responsive
@@ -141,6 +151,7 @@ class MobileContainer extends PureComponent {
                                         <Button as={ NavLink } to="/logout" inverted={!fixed}>
                                             Log out
                                         </Button>
+                                        <h3 style={{color: "white", paddingLeft: "20px"}}>Connected as {user.surname}</h3>
                                     </Menu.Item>
                                     : <Menu.Item position="right">
                                         <Button as={ NavLink } to="/login" inverted={!fixed}>

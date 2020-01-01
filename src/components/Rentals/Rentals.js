@@ -47,13 +47,13 @@ export default class Rentals extends Component{
         })
     };
 
-    clearFilters = () => {
+    clearFilters = (e) => {
         this.setState(prevState => ({
-            ...prevState,
             filters: {
                 location: '',
                 radio: 'all',
-            }
+            },
+            results: prevState.rentals
         }));
     };
 
@@ -156,8 +156,6 @@ export default class Rentals extends Component{
 
         const { locations, suirChecked, results, filters } = this.state;
 
-        console.info(this.state)
-
         return (
 
             <div>
@@ -171,6 +169,7 @@ export default class Rentals extends Component{
                                 <Grid.Column style={{paddingBottom: '5em', paddingTop: '1em'}}>
                                     <Sticky context={this.contextRef} offset={100}>
                                         <RentalsFilter
+                                            filters={filters}
                                             locations = {locations}
                                             suirChecked = {suirChecked}
                                             dropdownValue={this.state.filters.location}

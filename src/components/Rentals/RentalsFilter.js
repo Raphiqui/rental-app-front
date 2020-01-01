@@ -1,9 +1,20 @@
 import React, { Component } from "react";
-import {Segment, Form, Select} from 'semantic-ui-react';
+import {Segment, Form, Select, Button} from 'semantic-ui-react';
 import {Slider, DatePicker} from "antd";
-import {_} from 'lodash';
+import _ from 'lodash';
 
 export default class RentalsFilter extends Component{
+
+    constructor() {
+        super();
+        this.state ={
+            filters: {
+                location: '',
+                radio: 'all',
+            }
+        };
+    }
+
 
     render() {
         const { RangePicker } = DatePicker;
@@ -27,7 +38,7 @@ export default class RentalsFilter extends Component{
                         <Form.Field label='Pool' name="pool" control='input' type='checkbox' onChange={this.props.handleCheckbox} />
                         <Form.Field label='Hot tub' name="hot_tub" control='input' type='checkbox' onChange={this.props.handleCheckbox} />
                     </Form.Group>
-                    <Form.Group inline>
+                    <Form.Group grouped>
                         <label>More options</label>
                         <Form.Radio
                             label='Rentals available'
@@ -51,8 +62,7 @@ export default class RentalsFilter extends Component{
                             onChange={this.props.handleRadio}
                         />
                     </Form.Group>
-                    <Form.Button>Submit</Form.Button>
-                    <Form.Button onClick={this.props.clearFilters}>Clear all filters</Form.Button>
+                    <Form.Button color="blue">Submit</Form.Button>
                     {/*<List>*/}
                         {/*<List.Item>*/}
                             {/*<label style={{ fontWeight: "bold" }} >Rental's price</label>*/}
@@ -74,6 +84,18 @@ export default class RentalsFilter extends Component{
                         {/*<Button onClick={this.props.onTest} style={{ marginTop: '3px'}}>Search</Button>*/}
                     {/*</List>*/}
                 </Form>
+
+                {_.isEqual(JSON.stringify(this.state.filters), JSON.stringify(this.props.filters))
+                    ? null
+                    : <Button
+                        circular
+                        color="red"
+                        onClick={this.props.clearFilters}
+                        style={{marginTop: "10px"}}
+                    >
+                        Clear all the filters
+                    </Button>
+                }
             </Segment>
         )
     }

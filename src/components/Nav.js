@@ -1,7 +1,7 @@
 import React, {PureComponent} from "react";
 import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { Button, Container, Icon, Menu, Responsive, Segment, Sidebar, Visibility, } from 'semantic-ui-react';
+import { Button, Container, Icon, Menu, Responsive, Segment, Sidebar, Visibility } from 'semantic-ui-react';
 
 const getWidth = () => {
     const isSSR = typeof window === 'undefined';
@@ -13,26 +13,25 @@ class DesktopContainer extends PureComponent {
     constructor() {
         super();
         this.state = {
+            style: {color: "white", paddingLeft: "20px"}
         }
     }
 
     componentWillMount(){
         if(sessionStorage.getItem('currentUser') != null){
-            this.setState({loggedIn: true});
+            this.setState({loggedIn: true, user: JSON.parse(sessionStorage.getItem('currentUser'))})
         }
         else{
-            this.setState({loggedIn: false});
+            this.setState({loggedIn: false, user: null});
         }
     }
 
-    hideFixedMenu = () => this.setState({ fixed: false });
-    showFixedMenu = () => this.setState({ fixed: true });
+    hideFixedMenu = () => this.setState({ fixed: false, style: {color: "white", paddingLeft: "20px"}});
+    showFixedMenu = () => this.setState({ fixed: true, style: {color: "black", paddingLeft: "20px"}});
 
     render() {
         const { children } = this.props;
-        const { fixed } = this.state;
-
-        console.info(sessionStorage.getItem("currentUser"));
+        const { fixed, user, style } = this.state;
 
         return (
             <Responsive getWidth={getWidth} minWidth={Responsive.onlyTablet.minWidth}>
@@ -65,6 +64,7 @@ class DesktopContainer extends PureComponent {
                                         <Button as={ NavLink } to="/logout" inverted={!fixed}>
                                             Log out
                                         </Button>
+                                        <h3 style={style}>Connected as {user.surname}</h3>
                                     </Menu.Item>
                                     : <Menu.Item position="right">
                                         <Button as={ NavLink } to="/login" inverted={!fixed}>
@@ -90,6 +90,7 @@ DesktopContainer.propTypes = {
     children: PropTypes.node,
 };
 
+//TODO add log out update about mobile display
 class MobileContainer extends PureComponent {
     constructor() {
         super();
@@ -97,13 +98,22 @@ class MobileContainer extends PureComponent {
         }
     }
 
-    handleSidebarHide = () => this.setState({ sidebarOpened: false });
+    componentWillMount(){
+        if(sessionStorage.getItem('currentUser') != null){
+            this.setState({loggedIn: true, user: JSON.parse(sessionStorage.getItem('currentUser'))})
+        }
+        else{
+            this.setState({loggedIn: false, user: null});
+        }
+    }
 
-    handleToggle = () => this.setState({ sidebarOpened: true });
+    handleSidebarHide = () => this.setState({ sidebarOpened: false});
+
+    handleToggle = () => this.setState({ sidebarOpened: true});
 
     render() {
         const { children } = this.props;
-        const { sidebarOpened, fixed } = this.state;
+        const { sidebarOpened, fixed, user, style } = this.state;
 
         return (
             <Responsive
@@ -137,14 +147,22 @@ class MobileContainer extends PureComponent {
                                 <Menu.Item onClick={this.handleToggle}>
                                     <Icon name='sidebar' />
                                 </Menu.Item>
-                                <Menu.Item position='right'>
-                                    <Button as={ NavLink } to="/login" inverted={!fixed}>
-                                        Log in
-                                    </Button>
-                                    <Button as={ NavLink } to="/signin" inverted={!fixed} primary={fixed} style={{ marginLeft: '0.5em' }}>
-                                        Sign Up
-                                    </Button>
-                                </Menu.Item>
+                                {sessionStorage.getItem('currentUser') !== null
+                                    ? <Menu.Item position="right">
+                                        <Button as={ NavLink } to="/logout" inverted={!fixed}>
+                                            Log out
+                                        </Button>
+                                        <h3 style={{color: "white", paddingLeft: "20px"} }>Connected as {user.surname}</h3>
+                                    </Menu.Item>
+                                    : <Menu.Item position="right">
+                                        <Button as={ NavLink } to="/login" inverted={!fixed}>
+                                            Log in
+                                        </Button>
+                                        <Button as={ NavLink } to="/signin" inverted={!fixed} primary={fixed} style={{ marginLeft: '0.5em' }}>
+                                            Sign Up
+                                        </Button>
+                                    </Menu.Item>
+                                }
                             </Menu>
                         </Container>
                     </Segment>

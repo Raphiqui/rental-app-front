@@ -7,6 +7,7 @@ import RentalsFilter from "./RentalsFilter";
 import RentalsSearch from "./RentalsSearch";
 import RentalsDisplay from "./RentalsDisplay";
 import Nav from "../Nav";
+import moment from 'moment';
 
 export default class Rentals extends Component{
 
@@ -19,7 +20,7 @@ export default class Rentals extends Component{
             locations: [],
             filters: {
                 location: '',
-                radio: 'all',
+                // radio: 'all',
             }
         };
     }
@@ -47,11 +48,28 @@ export default class Rentals extends Component{
         })
     };
 
-    clearFilters = (e) => {
+    onChangeDate = (date, dateString) => {
+        const allDays = [];
+        const currDate = moment(dateString[0]);
+        const lastDate = moment(dateString[1]);
+        allDays.push(currDate.format('YYYY-MM-DD'));
+        while(currDate.add(1, 'days').diff(lastDate) < 0) {
+            allDays.push(currDate.clone().format('YYYY-MM-DD'));
+        }
+        allDays.push(lastDate.format('YYYY-MM-DD'));
+        this.setState(prevState => ({
+            filters: {
+                ...prevState.filters,
+                dateSelected: allDays
+            }
+        }))
+    };
+
+    clearFilters = () => {
         this.setState(prevState => ({
             filters: {
                 location: '',
-                radio: 'all',
+                // radio: 'all',
             },
             results: prevState.rentals
         }));
@@ -76,14 +94,14 @@ export default class Rentals extends Component{
         }))
     };
 
-    handleRadio = (e, { value }) => {
-        this.setState(prevState => ({
-            filters: {
-                ...prevState.filters,
-                radio: value
-            }
-        }))
-    };
+    // handleRadio = (e, { value }) => {
+    //     this.setState(prevState => ({
+    //         filters: {
+    //             ...prevState.filters,
+    //             radio: value
+    //         }
+    //     }))
+    // };
 
     onChange = (value) => {
         console.log('onChange: ', value);
@@ -98,16 +116,31 @@ export default class Rentals extends Component{
     handleSubmit = () => {
 
         const resultsLocation = this.state.rentals.filter(rental => rental.location === this.state.filters.location);
-        let resultsAvailable;
-        if(this.state.filters.radio === "available"){
-            resultsAvailable = resultsLocation.filter(rental => rental.isAvailable === true);
-            this.setState({
-                results: resultsAvailable,
+        if(this.state.filters.dateSelected !== null) {
+
+            const oks = [];
+
+            _.map(resultsLocation, rental => {
+                if(!_.isEmpty(rental.rentingDates)){
+                    let alrTakenDates = [];
+                    _.map(rental.rentingDates, dates => {
+
+                        if(!_.includes(this.state.filters.dateSelected, dates.from) && !_.includes(this.state.filters.dateSelected, dates.to)){
+                            alrTakenDates.push(false);
+                        }else{
+                            alrTakenDates.push(true);
+                        }
+                    });
+                    if(!_.includes(alrTakenDates, true)){
+                        oks.push(rental)
+                    }
+                }else{
+                    oks.push(rental)
+                }
             });
-        }else if(this.state.filters.radio === "notAvailable"){
-            resultsAvailable = resultsLocation.filter(rental => rental.isAvailable === false);
+
             this.setState({
-                results: resultsAvailable,
+                results: oks,
             });
         }else{
             this.setState({
@@ -178,7 +211,8 @@ export default class Rentals extends Component{
                                             value={filters.radio}
                                             handleDropdown = {this.handleDropdown}
                                             handleCheckbox = {this.handleCheckbox}
-                                            handleRadio={this.handleRadio}
+                                            // handleRadio={this.handleRadio}
+                                            onChangeDate={this.onChangeDate}
                                         />
                                     </Sticky>
                                 </Grid.Column>

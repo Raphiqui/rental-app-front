@@ -17,50 +17,49 @@ export default class RentalsFilter extends Component{
         };
     }
 
-    onChange = (date, dateString) => {
-        console.log(date);
-        this.setState({disableDate: date})
-    };
-
     disabledDate = (current) => {
-        const dates = [
-            {
-                from: "2020-01-10",
-                to: "2020-01-15"
-            },
-            {
-                from: "2020-02-10",
-                to: "2020-02-15"
-            },
-            {
-                from: "2020-03-10",
-                to: "2020-03-15"
-            },
-            {
-                from: "2020-04-05",
-                to: "2020-04-20"
-            },
-        ];
-
-        let allDates = [];
-
-        _.map(dates, date => {
-            const currDate = moment(date.from);
-            const lastDate = moment(date.to);
-            allDates.push(currDate.format('YYYY-MM-DD'));
-            while(currDate.add(1, 'days').diff(lastDate) < 0) {
-                allDates.push(currDate.clone().format('YYYY-MM-DD'));
-            }
-            allDates.push(lastDate.format('YYYY-MM-DD'));
-        });
-
-        if (current < moment().endOf('day')){
-            return true
-        }else{
-            let index = allDates.findIndex(date => date === moment(current).format('YYYY-MM-DD'));
-            return index !== -1 && true
-        }
+        return current && current < moment().endOf('day');
     };
+
+    // disabledDate = (current) => {
+    //     const dates = [
+    //         {
+    //             from: "2020-01-10",
+    //             to: "2020-01-15"
+    //         },
+    //         {
+    //             from: "2020-02-10",
+    //             to: "2020-02-15"
+    //         },
+    //         {
+    //             from: "2020-03-10",
+    //             to: "2020-03-15"
+    //         },
+    //         {
+    //             from: "2020-04-05",
+    //             to: "2020-04-20"
+    //         },
+    //     ];
+    //
+    //     let allDates = [];
+    //
+    //     _.map(dates, date => {
+    //         const currDate = moment(date.from);
+    //         const lastDate = moment(date.to);
+    //         allDates.push(currDate.format('YYYY-MM-DD'));
+    //         while(currDate.add(1, 'days').diff(lastDate) < 0) {
+    //             allDates.push(currDate.clone().format('YYYY-MM-DD'));
+    //         }
+    //         allDates.push(lastDate.format('YYYY-MM-DD'));
+    //     });
+    //
+    //     if (current < moment().endOf('day')){
+    //         return true
+    //     }else{
+    //         let index = allDates.findIndex(date => date === moment(current).format('YYYY-MM-DD'));
+    //         return index !== -1 && true
+    //     }
+    // };
 
     render() {
         const { RangePicker } = DatePicker;
@@ -82,7 +81,7 @@ export default class RentalsFilter extends Component{
                     <Form.Field>
                         <label>When</label>
                         <RangePicker
-                            onChange={this.onChange}
+                            onChange={this.props.onChangeDate}
                             disabledDate={this.disabledDate}
                             size="large"
                         />
@@ -92,30 +91,30 @@ export default class RentalsFilter extends Component{
                         <Form.Field label='Pool' name="pool" control='input' type='checkbox' onChange={this.props.handleCheckbox} />
                         <Form.Field label='Hot tub' name="hot_tub" control='input' type='checkbox' onChange={this.props.handleCheckbox} />
                     </Form.Group>
-                    <Form.Group grouped>
-                        <label>More options</label>
-                        <Form.Radio
-                            label='Rentals available'
-                            name="available"
-                            value='available'
-                            checked={value === 'available'}
-                            onChange={this.props.handleRadio}
-                        />
-                        <Form.Radio
-                            label='Rentals not available'
-                            name="notAvailable"
-                            value='notAvailable'
-                            checked={value === 'notAvailable'}
-                            onChange={this.props.handleRadio}
-                        />
-                        <Form.Radio
-                            label='All rental'
-                            name="all"
-                            value='all'
-                            checked={value === 'all'}
-                            onChange={this.props.handleRadio}
-                        />
-                    </Form.Group>
+                    {/*<Form.Group grouped>*/}
+                        {/*<label>More options</label>*/}
+                        {/*<Form.Radio*/}
+                            {/*label='Rentals available'*/}
+                            {/*name="available"*/}
+                            {/*value='available'*/}
+                            {/*checked={value === 'available'}*/}
+                            {/*onChange={this.props.handleRadio}*/}
+                        {/*/>*/}
+                        {/*<Form.Radio*/}
+                            {/*label='Rentals not available'*/}
+                            {/*name="notAvailable"*/}
+                            {/*value='notAvailable'*/}
+                            {/*checked={value === 'notAvailable'}*/}
+                            {/*onChange={this.props.handleRadio}*/}
+                        {/*/>*/}
+                        {/*<Form.Radio*/}
+                            {/*label='All rental'*/}
+                            {/*name="all"*/}
+                            {/*value='all'*/}
+                            {/*checked={value === 'all'}*/}
+                            {/*onChange={this.props.handleRadio}*/}
+                        {/*/>*/}
+                    {/*</Form.Group>*/}
                     <Form.Button disabled={_.isEmpty(this.props.filters.location)} color="blue">Submit</Form.Button>
                     {/*<List>*/}
                         {/*<List.Item>*/}

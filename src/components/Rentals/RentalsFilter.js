@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import {Segment, Form, Select, Button} from 'semantic-ui-react';
 import {Slider, DatePicker} from "antd";
 import _ from 'lodash';
+import moment from 'moment';
 
 export default class RentalsFilter extends Component{
 
@@ -11,10 +12,55 @@ export default class RentalsFilter extends Component{
             filters: {
                 location: '',
                 radio: 'all',
-            }
+            },
+            disableDate: null
         };
     }
 
+    onChange = (date, dateString) => {
+        console.log(date);
+        this.setState({disableDate: date})
+    };
+
+    disabledDate = (current) => {
+        const dates = [
+            {
+                from: "2020-01-10",
+                to: "2020-01-15"
+            },
+            {
+                from: "2020-02-10",
+                to: "2020-02-15"
+            },
+            {
+                from: "2020-03-10",
+                to: "2020-03-15"
+            },
+            {
+                from: "2020-04-05",
+                to: "2020-04-20"
+            },
+        ];
+
+        let allDates = [];
+
+        _.map(dates, date => {
+            const currDate = moment(date.from);
+            const lastDate = moment(date.to);
+            allDates.push(currDate.format('YYYY-MM-DD'));
+            while(currDate.add(1, 'days').diff(lastDate) < 0) {
+                allDates.push(currDate.clone().format('YYYY-MM-DD'));
+            }
+            allDates.push(lastDate.format('YYYY-MM-DD'));
+        });
+
+        if (current < moment().endOf('day')){
+            return true
+        }else{
+            let index = allDates.findIndex(date => date === moment(current).format('YYYY-MM-DD'));
+            return index !== -1 && true
+        }
+    };
 
     render() {
         const { RangePicker } = DatePicker;
@@ -33,6 +79,14 @@ export default class RentalsFilter extends Component{
                         name="location"
                         options={locations}
                     />
+                    <Form.Field>
+                        <label>When</label>
+                        <RangePicker
+                            onChange={this.onChange}
+                            disabledDate={this.disabledDate}
+                            size="large"
+                        />
+                    </Form.Field>
                     <Form.Group grouped>
                         <label>Facilities</label>
                         <Form.Field label='Pool' name="pool" control='input' type='checkbox' onChange={this.props.handleCheckbox} />

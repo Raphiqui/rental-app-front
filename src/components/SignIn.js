@@ -107,15 +107,11 @@ export default class SignIn extends Component{
         });
 
         if(validateForm(this.state.errors) && !_.isEmpty(dataToSend["birth_date"])) {
-            console.info('Valid Form');
-            console.info({dataToSend});
-
             let userapi = new userApi();
 
             let response;
             try{
                 response = await userapi.createUser(dataToSend);
-                console.log({response});
                 if(!("error" in response)){
                     this.setState({userInfos: response.data, successfullyCreated: true, unsuccessfullyCreated: false})
                 }else{

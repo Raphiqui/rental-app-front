@@ -11,7 +11,8 @@ export default class RentalsFilter extends Component{
         this.state ={
             filters: {
                 location: '',
-                radio: 'all',
+                pool: false,
+                hot_tub: false,
             },
             disableDate: null
         };
@@ -21,121 +22,49 @@ export default class RentalsFilter extends Component{
         return current && current < moment().endOf('day');
     };
 
-    // disabledDate = (current) => {
-    //     const dates = [
-    //         {
-    //             from: "2020-01-10",
-    //             to: "2020-01-15"
-    //         },
-    //         {
-    //             from: "2020-02-10",
-    //             to: "2020-02-15"
-    //         },
-    //         {
-    //             from: "2020-03-10",
-    //             to: "2020-03-15"
-    //         },
-    //         {
-    //             from: "2020-04-05",
-    //             to: "2020-04-20"
-    //         },
-    //     ];
-    //
-    //     let allDates = [];
-    //
-    //     _.map(dates, date => {
-    //         const currDate = moment(date.from);
-    //         const lastDate = moment(date.to);
-    //         allDates.push(currDate.format('YYYY-MM-DD'));
-    //         while(currDate.add(1, 'days').diff(lastDate) < 0) {
-    //             allDates.push(currDate.clone().format('YYYY-MM-DD'));
-    //         }
-    //         allDates.push(lastDate.format('YYYY-MM-DD'));
-    //     });
-    //
-    //     if (current < moment().endOf('day')){
-    //         return true
-    //     }else{
-    //         let index = allDates.findIndex(date => date === moment(current).format('YYYY-MM-DD'));
-    //         return index !== -1 && true
-    //     }
-    // };
-
     render() {
         const { RangePicker } = DatePicker;
-        const {locations, suirChecked, value} = this.props;
+        const {locations, handleDropdown, dropdownValue, handleSubmit, onChangeDate, handleCheckbox, filters } = this.props;
 
         return (
+            //TODO: clear display of rangepicker when click on clear filter button
             <Segment raised style={{marginLeft: "30px"}}>
-                <Form onSubmit={this.props.handleSubmit} >
-                    <h3>Find your perfect place using the filter</h3>
+
+                <h3>Find your perfect place using the filter</h3>
+
+                <h4 style={{ fontWeight: "bold"}}>When</h4>
+                <RangePicker
+                    style={{marginBottom: '10px'}}
+                    onChange={onChangeDate}
+                    disabledDate={this.disabledDate}
+                    size="large"
+                    allowClear={false}
+                />
+
+                <Form onSubmit={handleSubmit} >
                     <Form.Field
-                        onChange={this.props.handleDropdown}
-                        value={this.props.dropdownValue}
+                        onChange={handleDropdown}
+                        value={dropdownValue}
                         placeholder='Select where'
                         control={Select}
                         label="Location"
                         name="location"
                         options={locations}
                     />
-                    <Form.Field>
-                        <label>When</label>
-                        <RangePicker
-                            onChange={this.props.onChangeDate}
-                            disabledDate={this.disabledDate}
-                            size="large"
-                        />
-                    </Form.Field>
                     <Form.Group grouped>
                         <label>Facilities</label>
-                        <Form.Field label='Pool' name="pool" control='input' type='checkbox' onChange={this.props.handleCheckbox} />
-                        <Form.Field label='Hot tub' name="hot_tub" control='input' type='checkbox' onChange={this.props.handleCheckbox} />
+                        <Form.Field label='Pool' name="pool" checked={filters.pool} control='input' type='checkbox' onChange={handleCheckbox} />
+                        <Form.Field label='Hot tub' name="hot_tub" checked={filters.hot_tub} control='input' type='checkbox' onChange={handleCheckbox} />
                     </Form.Group>
-                    {/*<Form.Group grouped>*/}
-                        {/*<label>More options</label>*/}
-                        {/*<Form.Radio*/}
-                            {/*label='Rentals available'*/}
-                            {/*name="available"*/}
-                            {/*value='available'*/}
-                            {/*checked={value === 'available'}*/}
-                            {/*onChange={this.props.handleRadio}*/}
-                        {/*/>*/}
-                        {/*<Form.Radio*/}
-                            {/*label='Rentals not available'*/}
-                            {/*name="notAvailable"*/}
-                            {/*value='notAvailable'*/}
-                            {/*checked={value === 'notAvailable'}*/}
-                            {/*onChange={this.props.handleRadio}*/}
-                        {/*/>*/}
-                        {/*<Form.Radio*/}
-                            {/*label='All rental'*/}
-                            {/*name="all"*/}
-                            {/*value='all'*/}
-                            {/*checked={value === 'all'}*/}
-                            {/*onChange={this.props.handleRadio}*/}
-                        {/*/>*/}
-                    {/*</Form.Group>*/}
                     <Form.Button disabled={_.isEmpty(this.props.filters.location)} color="blue">Submit</Form.Button>
-                    {/*<List>*/}
-                        {/*<List.Item>*/}
-                            {/*<label style={{ fontWeight: "bold" }} >Rental's price</label>*/}
-                            {/*<Slider*/}
-                                {/*range*/}
-                                {/*step={1}*/}
-                                {/*max={1000}*/}
-                                {/*defaultValue={[20, 50]}*/}
-                                {/*onChange={this.onChange}*/}
-                            {/*/>*/}
-                        {/*</List.Item>*/}
-                        {/*<List.Item>*/}
-                            {/*<label style={{ fontWeight: "bold" }}>When ?</label>*/}
-                            {/*<br/>*/}
-                            {/*<RangePicker*/}
-                                {/*size="large"*/}
-                            {/*/>*/}
-                        {/*</List.Item>*/}
-                        {/*<Button onClick={this.props.onTest} style={{ marginTop: '3px'}}>Search</Button>*/}
-                    {/*</List>*/}
+                    {/*<label style={{ fontWeight: "bold" }} >Rental's price</label>*/}
+                    {/*<Slider*/}
+                        {/*range*/}
+                        {/*step={1}*/}
+                        {/*max={1000}*/}
+                        {/*defaultValue={[20, 50]}*/}
+                        {/*onChange={this.onChange}*/}
+                    {/*/>*/}
                 </Form>
 
                 {_.isEqual(JSON.stringify(this.state.filters), JSON.stringify(this.props.filters))

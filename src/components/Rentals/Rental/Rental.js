@@ -12,23 +12,19 @@ export default class Rental extends Component{
 
     constructor(props) {
         super(props);
-        this.state  = {
-        };
+        this.state  = {};
     }
 
     async componentDidMount() {
         let rentalapi = new rentalApi();
 
         let response;
-        let picturesUrl = [];
 
         try{
             response = await rentalapi.fetchRental(this.props.match.params.id);
             if(!("error" in response)){
 
-                _.map(response.data.pictures, picture => {
-                    picturesUrl.push(picture.url)
-                });
+                let picturesUrl = response.data.pictures.map(picture => picture.url);
 
                 this.setState({rental: response.data, pictsUrl: picturesUrl})
             }
@@ -36,6 +32,46 @@ export default class Rental extends Component{
             console.error(e);
         }
     };
+
+    // disabledDate = (current) => {
+    //     const dates = [
+    //         {
+    //             from: "2020-01-10",
+    //             to: "2020-01-15"
+    //         },
+    //         {
+    //             from: "2020-02-10",
+    //             to: "2020-02-15"
+    //         },
+    //         {
+    //             from: "2020-03-10",
+    //             to: "2020-03-15"
+    //         },
+    //         {
+    //             from: "2020-04-05",
+    //             to: "2020-04-20"
+    //         },
+    //     ];
+    //
+    //     let allDates = [];
+    //
+    //     _.map(dates, date => {
+    //         const currDate = moment(date.from);
+    //         const lastDate = moment(date.to);
+    //         allDates.push(currDate.format('YYYY-MM-DD'));
+    //         while(currDate.add(1, 'days').diff(lastDate) < 0) {
+    //             allDates.push(currDate.clone().format('YYYY-MM-DD'));
+    //         }
+    //         allDates.push(lastDate.format('YYYY-MM-DD'));
+    //     });
+    //
+    //     if (current < moment().endOf('day')){
+    //         return true
+    //     }else{
+    //         let index = allDates.findIndex(date => date === moment(current).format('YYYY-MM-DD'));
+    //         return index !== -1 && true
+    //     }
+    // };
 
     render() {
         const { rental, pictsUrl } = this.state;

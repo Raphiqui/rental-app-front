@@ -20,43 +20,37 @@ export default class Rentals extends Component{
             locations: [],
             filters: {
                 location: '',
-                // radio: 'all',
+                pool: false,
+                hot_tub: false,
             }
         };
     }
 
+    // Useful for sticky
     contextRef = createRef();
 
     handleSearchChange = (e, { value }) => {
-        let founds = [];
+        value = _.toLower(value);
 
-        _.map(this.state.rentals, rental => {
-            value = _.toLower(value);
-            const rentalName = _.toLower(rental.name);
-            const found = rentalName.match(value);
-            if(!_.isNull(found)){founds.push(rental)}
+        let founds = this.state.rentals.map(rental => {
+            if(_.toLower(rental.name).match(value)){
+                return rental
+            }
         });
 
         this.setState({
-            results: founds,
+            results: _.compact(founds),
         });
-    };
-
-    getInput = (event) => {
-        this.setState({
-            filters: { location: event.target.textContent}
-        })
     };
 
     onChangeDate = (date, dateString) => {
-        const allDays = [];
         const currDate = moment(dateString[0]);
         const lastDate = moment(dateString[1]);
-        allDays.push(currDate.format('YYYY-MM-DD'));
+        let allDays = [currDate.format('YYYY-MM-DD')];
         while(currDate.add(1, 'days').diff(lastDate) < 0) {
-            allDays.push(currDate.clone().format('YYYY-MM-DD'));
+            allDays = _.concat(allDays, currDate.clone().format('YYYY-MM-DD'));
         }
-        allDays.push(lastDate.format('YYYY-MM-DD'));
+        allDays = _.concat(allDays, lastDate.format('YYYY-MM-DD'));
         this.setState(prevState => ({
             filters: {
                 ...prevState.filters,
@@ -69,7 +63,8 @@ export default class Rentals extends Component{
         this.setState(prevState => ({
             filters: {
                 location: '',
-                // radio: 'all',
+                pool: false,
+                hot_tub: false,
             },
             results: prevState.rentals
         }));
@@ -94,53 +89,30 @@ export default class Rentals extends Component{
         }))
     };
 
-    // handleRadio = (e, { value }) => {
-    //     this.setState(prevState => ({
-    //         filters: {
-    //             ...prevState.filters,
-    //             radio: value
-    //         }
-    //     }))
-    // };
-
-    onChange = (value) => {
-        console.log('onChange: ', value);
-    };
-
-    checked = (data) => {
-        this.setState({
-            filters: { isAvailable: data.checked}
-        })
-    };
-
     handleSubmit = () => {
 
-        const resultsLocation = this.state.rentals.filter(rental => rental.location === this.state.filters.location);
+        const resultsLocation = this.state.rentals.filter(rental =>
+            rental.location === this.state.filters.location
+            && rental.facilities.isPoolAvailable === this.state.filters.pool &&
+            rental.facilities.isHotTubAvailable === this.state.filters.hot_tub);
+
         if(this.state.filters.dateSelected !== null) {
 
-            const oks = [];
-
-            _.map(resultsLocation, rental => {
+            let datesFiltering = resultsLocation.map(rental => {
                 if(!_.isEmpty(rental.rentingDates)){
-                    let alrTakenDates = [];
-                    _.map(rental.rentingDates, dates => {
-
-                        if(!_.includes(this.state.filters.dateSelected, dates.from) && !_.includes(this.state.filters.dateSelected, dates.to)){
-                            alrTakenDates.push(false);
-                        }else{
-                            alrTakenDates.push(true);
-                        }
+                    let alrTakenDates = rental.rentingDates.map(dates => {
+                        return !(!_.includes(this.state.filters.dateSelected, dates.from) && !_.includes(this.state.filters.dateSelected, dates.to));
                     });
                     if(!_.includes(alrTakenDates, true)){
-                        oks.push(rental)
+                        return rental;
                     }
                 }else{
-                    oks.push(rental)
+                    return rental;
                 }
             });
 
             this.setState({
-                results: oks,
+                results: _.compact(datesFiltering),
             });
         }else{
             this.setState({
@@ -153,26 +125,18 @@ export default class Rentals extends Component{
         let rentalapi = new rentalApi();
 
         let response;
-        let locationsBuffer = [];
 
         try{
             response = await rentalapi.fetchRentals();
             if(!("error" in response)){
 
-
-
-                _.map(response.data, rental => {
-                        locationsBuffer = _.concat(locationsBuffer, {
-                            key: rental.location,
-                            text: rental.location,
-                            value: rental.location
-                        })
-                });
+                // with occurrences
+                let locationsBuffer = response.data.map(rental => ({key: rental.location, text: rental.location, value: rental.location}));
 
                 this.setState({
                     results: response.data,
                     rentals: response.data,
-                    locations: [...new Map(locationsBuffer.map(item => [item.key, item])).values()],
+                    locations: [...new Map(locationsBuffer.map(item => [item.key, item])).values()], // clear occurrences
                 })
             }
 
@@ -182,17 +146,15 @@ export default class Rentals extends Component{
     };
 
     check = (event) => {
-        console.log(event.target.checked)
+        console.info(event.target.checked)
     };
 
     render() {
 
-        const { locations, suirChecked, results, filters } = this.state;
+        const { locations, results, filters } = this.state;
 
         return (
-
             <div>
-
                 <Nav/>
 
                 <Segment style={{padding: '0em'}} basic vertical>
@@ -204,14 +166,11 @@ export default class Rentals extends Component{
                                         <RentalsFilter
                                             filters={filters}
                                             locations = {locations}
-                                            suirChecked = {suirChecked}
-                                            dropdownValue={this.state.filters.location}
+                                            dropdownValue={filters.location}
                                             handleSubmit = {this.handleSubmit}
                                             clearFilters={this.clearFilters}
-                                            value={filters.radio}
                                             handleDropdown = {this.handleDropdown}
                                             handleCheckbox = {this.handleCheckbox}
-                                            // handleRadio={this.handleRadio}
                                             onChangeDate={this.onChangeDate}
                                         />
                                     </Sticky>

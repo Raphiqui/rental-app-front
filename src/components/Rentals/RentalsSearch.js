@@ -6,11 +6,13 @@ export default class RentalsSearch extends Component{
 
     render() {
 
+        const { handleSearchChange } =this.props;
+
         return (
             <Search
                 size="big"
                 placeholder="Search by name"
-                onSearchChange={_.debounce(this.props.handleSearchChange, 500, {
+                onSearchChange={_.debounce(handleSearchChange, 500, {
                     leading: true,
                 })}
                 open={false}

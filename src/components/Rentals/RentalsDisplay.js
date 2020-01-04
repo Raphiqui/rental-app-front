@@ -12,13 +12,6 @@ export default class RentalsDisplay extends Component{
         return (
             <Card.Group style={{padding: '1em'}} itemsPerRow={2} >
                 {_.map(results, result => {
-                    let style, message;
-                    if(result.isAvailable){
-                        style = {color: "green", fontWeight: "bold"}; message = "Available"
-                    }else{
-                        style = {color: "red", fontWeight: "bold"}; message = "Not available"
-                    }
-
                     return (    <Card key={result._id}>
                             <Card.Content>
                                 <Image
@@ -28,8 +21,9 @@ export default class RentalsDisplay extends Component{
                                 <Card.Header style={{fontSize: "25px"}}>{result.name}</Card.Header>
                                 <Card.Meta style={{color: "blue", fontSize: "20px"}}>{result.location}</Card.Meta>
                                 <Card.Description style={{fontSize: "16px"}}>{result.description}</Card.Description>
-                                <Icon name='circle' style={style}/>
-                                <p style={style}>{message}</p>
+                            </Card.Content>
+                            <Card.Content extra>
+                                <p style={{color: "blue", fontSize: "15px"}}>{}Price (from morning to morning) : {result.pricePerDay}<Icon name="euro" size="large"/></p>
                             </Card.Content>
                             <Card.Content extra>
                                 <div className='ui two buttons'>

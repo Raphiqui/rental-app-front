@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import {Segment, Form, Select, Button} from 'semantic-ui-react';
+import {Segment, Form, Select, Button, Icon} from 'semantic-ui-react';
 import {Slider, DatePicker} from "antd";
 import _ from 'lodash';
 import moment from 'moment';
@@ -24,7 +24,9 @@ export default class RentalsFilter extends Component{
 
     render() {
         const { RangePicker } = DatePicker;
-        const {locations, handleDropdown, dropdownValue, handleSubmit, onChangeDate, handleCheckbox, filters } = this.props;
+        const {locations, handleDropdown, dropdownValue, handleSubmit, onChangeDate, handleCheckbox, filters, rentals, onChangeSlider } = this.props;
+
+        const rentalsPrice = rentals.map(rental => rental.pricePerDay);
 
         return (
             //TODO: clear display of rangepicker when click on clear filter button
@@ -39,6 +41,16 @@ export default class RentalsFilter extends Component{
                     disabledDate={this.disabledDate}
                     size="large"
                     allowClear={false}
+                />
+
+                <h4 style={{ fontWeight: "bold"}}>Rental's price<Icon name="euro"/></h4>
+                <Slider
+                    range
+                    step={1}
+                    min={Math.min(...rentalsPrice)}
+                    max={Math.max(...rentalsPrice)}
+                    defaultValue={[20, 50]}
+                    onAfterChange={onChangeSlider}
                 />
 
                 <Form onSubmit={handleSubmit} >
@@ -57,14 +69,6 @@ export default class RentalsFilter extends Component{
                         <Form.Field label='Hot tub' name="hot_tub" checked={filters.hot_tub} control='input' type='checkbox' onChange={handleCheckbox} />
                     </Form.Group>
                     <Form.Button disabled={_.isEmpty(this.props.filters.location)} color="blue">Submit</Form.Button>
-                    {/*<label style={{ fontWeight: "bold" }} >Rental's price</label>*/}
-                    {/*<Slider*/}
-                        {/*range*/}
-                        {/*step={1}*/}
-                        {/*max={1000}*/}
-                        {/*defaultValue={[20, 50]}*/}
-                        {/*onChange={this.onChange}*/}
-                    {/*/>*/}
                 </Form>
 
                 {_.isEqual(JSON.stringify(this.state.filters), JSON.stringify(this.props.filters))

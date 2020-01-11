@@ -2,10 +2,12 @@ import React, { Component } from "react";
 import { Container, Divider, Segment } from "semantic-ui-react";
 import { Empty } from 'antd';
 import Nav from './Nav';
+import Map from "./Map";
 
 export default class About extends Component {
 
     render() {
+
         return (
             <div className="About">
 
@@ -46,6 +48,8 @@ export default class About extends Component {
                             <p>Location</p>
                         </Divider>
                         <Empty/>
+
+                        <Map/>
                     </Container>
                 </Segment>
             </div>

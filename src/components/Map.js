@@ -6,7 +6,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const styles = {
-    width: "100vh",
+    width: "74vh",
     height: "60vh",
 };
 

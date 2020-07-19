@@ -11,7 +11,7 @@
     "dotenv": "^8.2.0",
     "is-valid-birthdate": "^0.1.0",
     "jimp": "^0.9.3",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "mapbox-gl": "^1.6.1",
     "pure-react-carousel": "^1.24.1",
     "react": "^16.12.0",
